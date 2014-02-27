@@ -3,6 +3,12 @@ namespace Joindin\Controller;
 
 use Joindin\Model\API\Auth as AuthService;
 use Joindin\Model\API\User as UserService;
+use Joindin\Model\API\Talk as TalkService;
+use Joindin\Model\API\Event as EventService;
+
+use Joindin\Model\Db\Talk as DbTalk;
+use Joindin\Model\Db\Event as DbEvent;
+use Joindin\Service\Cache as CacheService;
 use \Joindin\Service\Helper\Config as Config;
 
 class User extends Base
@@ -19,6 +25,7 @@ class User extends Base
         $app->get('/user/logout', array($this, 'logout'))->name('user-logout');
         $app->map('/user/login', array($this, 'login'))->via('GET', 'POST')->name('user-login');
         $app->map('/user/register', array($this, 'register'))->via('GET', 'POST')->name('user-register');
+        $app->map('/user/profile/:slug', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
     }
 
     /**
@@ -102,5 +109,59 @@ class User extends Base
         }
         session_regenerate_id(true);
         $this->application->redirect('/');
+    }
+
+    /**
+     * User profile page
+     *
+     * @param  string $slug User's slug
+     * @return void
+     */
+    public function profile($slug)
+    {
+        $keyPrefix = $this->cfg['redis']['keyPrefix'];
+        $userDb = new \Joindin\Model\Db\User($keyPrefix);
+        $userUri = $userDb->getUriFor($slug);
+
+        $userService = new UserService($this->cfg, $this->accessToken, $userDb);
+        $user = $userService->getUser($userUri);
+
+        $dbTalk = new DbTalk($keyPrefix);
+        $talkApi = new TalkService($this->cfg, $this->accessToken, $dbTalk);
+        $talksCollection = $talkApi->getCollection($user->getTalksUri());
+
+        $talks = false;
+        $event_friendly_names = array();
+        if (isset($talksCollection['talks'])) {
+            $talks = $talksCollection['talks'];
+
+            // need the full url for each talk. We can get this via the db
+            $dbEvent = new DbEvent(new CacheService($keyPrefix));
+            foreach ($talks as $talk) {
+                $t = $dbTalk->load($talk->getApiUri());
+                $e = $dbEvent->load('uri', $talk->getEventUri());
+                if (!$e) {
+                    // event not cached yet
+                    $eventService = new EventService($this->cfg, $this->accessToken, $dbEvent);
+                    $event = $eventService->getEvent($talk->getEventUri());
+                    $e = $dbEvent->load('uri', $talk->getEventUri());
+                }
+                $event_friendly_names[$talk->getApiUri()] = $e['url_friendly_name'];
+            }
+
+        }
+
+
+        echo $this->application->render(
+            'User/profile.html.twig',
+            array(
+                'user'  => $user,
+                'talks' => $talks,
+                'event_friendly_names' => $event_friendly_names,
+                'hosts' => function ($hosts) {
+                    return "test";
+                },
+            )
+        );
     }
 }

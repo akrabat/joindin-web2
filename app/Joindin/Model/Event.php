@@ -100,6 +100,11 @@ class Event
         return $this->data->verbose_uri;
     }
 
+    public function getHosts()
+    {
+        return $this->data->hosts;
+    }
+
     public function isAttending()
     {
         return $this->data->attending;

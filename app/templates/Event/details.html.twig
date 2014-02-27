@@ -3,6 +3,7 @@
 {% block body %}
     {% include 'Event/_common/event_header.html.twig' %}
 
+    {{ talkHosts(hosts) }}
     <p>{{ event.getDescription|format_string|raw }}</p>
 
     <div id="comments">

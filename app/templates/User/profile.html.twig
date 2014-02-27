@@ -1,0 +1,22 @@
+{% extends '/layout.html.twig' %}
+
+{% block body %}
+<h2 class="title">{{ user.getFullName }}</h2>
+{% if user.getTwitterUsername %}
+<p><a href="https://twitter.com/{{ user.getTwitterUsername }}">@{{ user.getTwitterUsername }}</a></p>
+{% endif %}
+
+{% if talks %}
+
+<h2>Talks</h2>
+
+<ul>
+{% for talk in talks %}
+<li>
+    <a href="{{ urlForTalk(event_friendly_names[talk.getApiUri], talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

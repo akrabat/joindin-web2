@@ -59,6 +59,31 @@ class Event extends \Joindin\Model\API\JoindIn
         return $collectionData;
     }
 
+
+    /**
+     * Gets event data from api on single event
+     *
+     * @param string $event_uri  API event uri
+     * @param bool $verbose  Return verbose data?
+     * @return \Joindin\Model\Event
+     */
+    public function getEvent($event_uri, $verbose = false)
+    {
+        if($verbose) {
+            $event_uri = $event_uri . '?verbose=yes';
+        }
+
+        $result = (array)json_decode($this->apiGet($event_uri));
+        if (!isset($result['events'])) {
+            return false;
+        }
+
+        $event = new \Joindin\Model\Event($result['events'][0]);
+        $this->saveEventUrl($event);
+
+        return $event;
+    }
+
     /**
      * Take an event and save the url_friendly_name and the API URL for that
      *

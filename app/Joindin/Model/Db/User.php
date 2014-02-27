@@ -24,7 +24,7 @@ class User
         $data = array(
             'uri'  => $user->getUri(),
             'username' => $user->getUsername(),
-            'slug' => $user->getUsername(),
+            'slug' => $user->getSlug(),
             'verbose_uri'  => $user->getVerboseUri()
         );
 
@@ -34,6 +34,13 @@ class User
             $data = array_merge($savedUser, $data);
         }
 
+        $this->cache->save('users', $data, 'slug', $user->getSlug());
         return $this->cache->save('users', $data, 'uri', $user->getUri());
+    }
+
+    public function getUriFor($slug)
+    {
+        $data = $this->cache->load('users', 'slug', $slug);
+        return $data['uri'];
     }
 }

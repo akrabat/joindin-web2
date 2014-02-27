@@ -28,6 +28,8 @@ class User extends \Joindin\Model\API\JoindIn
                 if (isset($data->users) && isset($data->users[0])) {
                     $user = new UserEntity($data->users[0]);
 
+                    $this->userDb->saveSlugToDatabase($user);
+
                     return $user;
                 }
 

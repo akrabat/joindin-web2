@@ -2,8 +2,10 @@
 namespace Joindin\Controller;
 
 use Joindin\Model\Db\Talk;
-use \Joindin\Model\API\Event as EventApi;
-use  \Joindin\Service\Cache as CacheService;
+use Joindin\Model\API\Event as EventApi;
+use Joindin\Model\API\User as UserApi;
+use Joindin\Model\Db\User as UserDb;
+use Joindin\Service\Cache as CacheService;
 
 
 class Event extends Base
@@ -77,12 +79,15 @@ class Event extends Base
                 ));
 
             $comments = $apiEvent->getComments($event->getCommentsUri());
+            $hosts = $this->getEventHosts($event);
+
             echo $this->application->render(
                 'Event/details.html.twig',
                 array(
                     'event' => $event,
                     'quicklink' => $quicklink,
                     'comments' => $comments,
+                    'hosts' => $hosts,
                 )
             );
         } else {
@@ -90,6 +95,21 @@ class Event extends Base
             $this->application->redirect($events_url);
         }
 
+    }
+
+    protected function getEventHosts($event)
+    {
+        $keyPrefix = $this->cfg['redis']['keyPrefix'];
+        $userApi = new UserApi($this->cfg, $this->accessToken, new \Joindin\Model\Db\User($keyPrefix));
+        $userDb  = new UserDb($keyPrefix);
+        
+        $hosts = array();
+        foreach ($event->getHosts() as $host) {
+            $user = $userApi->getUser($host->host_uri);
+            $hosts[] = $user;
+        }
+
+        return $hosts;
     }
 
 

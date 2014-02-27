@@ -95,4 +95,14 @@ class User
     {
         return $this->data->attended_events_uri;
     }
+
+    /**
+     * Getter for slug
+     *
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->data->username;
+    }
 }
