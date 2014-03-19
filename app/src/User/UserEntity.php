@@ -95,4 +95,14 @@ class UserEntity
     {
         return $this->data->attended_events_uri;
     }
+
+    /**
+     * Getter for stub
+     *
+     * @return mixed
+     */
+    public function getStub()
+    {
+        return $this->data->username;
+    }
 }

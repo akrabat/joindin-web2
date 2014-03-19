@@ -18,6 +18,7 @@ class UserController extends BaseController
         $app->get('/user/logout', array($this, 'logout'))->name('user-logout');
         $app->map('/user/login', array($this, 'login'))->via('GET', 'POST')->name('user-login');
         $app->map('/user/register', array($this, 'register'))->via('GET', 'POST')->name('user-register');
+        $app->map('/user/profile/:stub', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
     }
 
     /**
@@ -97,5 +98,57 @@ class UserController extends BaseController
         }
         session_regenerate_id(true);
         $this->application->redirect('/');
+    }
+
+    /**
+     * User profile page
+     *
+     * @param  string $stub User's stub (usually username)
+     * @return void
+     */
+    public function profile($stub)
+    {
+        $keyPrefix = $this->cfg['redis']['keyPrefix'];
+        $cache = new CacheService($keyPrefix);
+
+        $userDb = new UserDb($cache);
+        $userUri = $userDb->getUriFor($stub);
+
+        $userApi = new UserApi($this->cfg, $this->accessToken, $userDb);
+        $user = $userApi->getUser($userUri);
+
+        $dbTalk = new TalkDb($cache);
+        $talkApi = new TalkApi($this->cfg, $this->accessToken, $dbTalk);
+        $talkCollection = $talkApi->getCollection($user->getTalksUri());
+
+        $talks = false;
+        $event_friendly_names = array();
+        if (isset($talkCollection['talks'])) {
+            $talks = $talkCollection['talks'];
+
+            // need the full url for each talk. We can get this via the db
+            $eventDb = new EventDb(new CacheService($cache));
+            foreach ($talks as $talk) {
+                $t = $dbTalk->load($talk->getApiUri());
+                $e = $eventDb->load('uri', $talk->getEventUri());
+                if (!$e) {
+                    // event not cached yet
+                    $eventApi = new EventApi($this->cfg, $this->accessToken, $eventDb);
+                    $event = $eventApi->getEvent($talk->getEventUri());
+                    $e = $eventDb->load('uri', $talk->getEventUri());
+                }
+                $event_friendly_names[$talk->getApiUri()] = $e['url_friendly_name'];
+            }
+
+        }
+
+        echo $this->render(
+            'User/profile.html.twig',
+            array(
+                'user'  => $user,
+                'talks' => $talks,
+                'event_friendly_names' => $event_friendly_names,
+            )
+        );
     }
 }
