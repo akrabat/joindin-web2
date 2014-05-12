@@ -3,6 +3,9 @@ namespace User;
 
 use Application\BaseController;
 use Application\CacheService;
+use Talk\TalkDb;
+use Talk\TalkApi;
+use Event\EventDb;
 
 class UserController extends BaseController
 {
@@ -18,7 +21,7 @@ class UserController extends BaseController
         $app->get('/user/logout', array($this, 'logout'))->name('user-logout');
         $app->map('/user/login', array($this, 'login'))->via('GET', 'POST')->name('user-login');
         $app->map('/user/register', array($this, 'register'))->via('GET', 'POST')->name('user-register');
-        $app->map('/user/profile/:stub', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
+        $app->map('/user/profile/:slug', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
     }
 
     /**
@@ -103,22 +106,31 @@ class UserController extends BaseController
     /**
      * User profile page
      *
-     * @param  string $stub User's stub (usually username)
+     * @param  string $slug User's slug (usually username)
      * @return void
      */
-    public function profile($stub)
+    public function profile($slug)
     {
         $keyPrefix = $this->cfg['redis']['keyPrefix'];
         $cache = new CacheService($keyPrefix);
 
         $userDb = new UserDb($cache);
-        $userUri = $userDb->getUriFor($stub);
+        $userUri = $userDb->getUriFor($slug);
+
 
         $userApi = new UserApi($this->cfg, $this->accessToken, $userDb);
-        $user = $userApi->getUser($userUri);
+        if ($userUri) {
+            $user = $userApi->getUser($userUri);
+        } else {
+            $user = $userApi->getUserByUsername($slug);
+            if (!$user) {
+                throw new Slim_Exception_Pass('Page not found', 404);
+            }
+            $userDb->save($user);
+        }
 
-        $dbTalk = new TalkDb($cache);
-        $talkApi = new TalkApi($this->cfg, $this->accessToken, $dbTalk);
+        $talkDb = new TalkDb($cache);
+        $talkApi = new TalkApi($this->cfg, $this->accessToken, $talkDb);
         $talkCollection = $talkApi->getCollection($user->getTalksUri());
 
         $talks = false;
@@ -127,9 +139,9 @@ class UserController extends BaseController
             $talks = $talkCollection['talks'];
 
             // need the full url for each talk. We can get this via the db
-            $eventDb = new EventDb(new CacheService($cache));
+            $eventDb = new EventDb($cache);
             foreach ($talks as $talk) {
-                $t = $dbTalk->load($talk->getApiUri());
+                $t = $talkDb->load('uri', $talk->getApiUri());
                 $e = $eventDb->load('uri', $talk->getEventUri());
                 if (!$e) {
                     // event not cached yet
@@ -139,7 +151,6 @@ class UserController extends BaseController
                 }
                 $event_friendly_names[$talk->getApiUri()] = $e['url_friendly_name'];
             }
-
         }
 
         echo $this->render(

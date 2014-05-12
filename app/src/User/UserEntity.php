@@ -97,11 +97,11 @@ class UserEntity
     }
 
     /**
-     * Getter for stub
+     * Getter for slug
      *
      * @return mixed
      */
-    public function getStub()
+    public function getSlug()
     {
         return $this->data->username;
     }

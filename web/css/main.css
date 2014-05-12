@@ -138,6 +138,9 @@ h2 {
     line-height: 200%;
 }
 
+ul li {
+    margin-left: 15px;
+}
 
 /*------------------------------------*\
  * Layout/Structure
@@ -480,4 +483,9 @@ nav a:hover, #head .userdetails a:hover {
 .message {
     color: #f80;
     margin: 10px auto;
+}
+
+ul.talks li {
+    list-style-type: none;
+    margin-left: 0;
 }

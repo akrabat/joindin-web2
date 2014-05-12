@@ -12,7 +12,7 @@ class UserDb extends BaseDb
         $data = array(
             'uri'  => $user->getUri(),
             'username' => $user->getUsername(),
-            'stub' => $user->getUsername(),
+            'slug' => $user->getUsername(),
             'verbose_uri'  => $user->getVerboseUri()
         );
 
@@ -22,13 +22,13 @@ class UserDb extends BaseDb
             $data = array_merge($savedUser, $data);
         }
 
-        $this->cache->save($this->keyName, $data, 'stub', $user->getStub());
+        $this->cache->save($this->keyName, $data, 'slug', $user->getSlug());
         $this->cache->save($this->keyName, $data, 'uri', $user->getUri());
     }
 
-    public function getUriFor($stub)
+    public function getUriFor($slug)
     {
-        $data = $this->cache->load('users', 'stub', $stub);
+        $data = $this->cache->load('users', 'slug', $slug);
         return $data['uri'];
     }
 }
