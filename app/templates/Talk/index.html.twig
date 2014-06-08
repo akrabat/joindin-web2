@@ -18,7 +18,9 @@
             {% if talk.getSpeakers %}
                 &mdash;
                 {% for speaker in talk.getSpeakers %}
+                    {% if speaker.stub %} <a href="{{ urlFor('user-profile', {"stub": speaker.stub}) }}">{% endif %}
                     {{ speaker.speaker_name }}{% if speaker.last and not speaker.first %}, {% endif %}
+                    {% if speaker.stub %} </a>{% endif %}
                 {% endfor %}
             {% endif %}
         </h2>

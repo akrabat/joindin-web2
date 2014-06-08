@@ -36,10 +36,10 @@ class UserApi extends BaseApi
         return false;
     }
 
-    public function getUserByUsername($username)
+    public function getUserByStub($stub)
     {
         $url = $this->baseApiUrl . '/v2.1/users';
-        $result = $this->apiGet($url, array('verbose' => 'yes', 'username' => $username ));
+        $result = $this->apiGet($url, array('verbose' => 'yes', 'username' => $stub ));
 
         if ($result) {
             $data = json_decode($result);

@@ -6,6 +6,7 @@ use Application\CacheService;
 use Talk\TalkDb;
 use Talk\TalkApi;
 use Event\EventDb;
+use Event\EventApi;
 
 class UserController extends BaseController
 {
@@ -21,7 +22,7 @@ class UserController extends BaseController
         $app->get('/user/logout', array($this, 'logout'))->name('user-logout');
         $app->map('/user/login', array($this, 'login'))->via('GET', 'POST')->name('user-login');
         $app->map('/user/register', array($this, 'register'))->via('GET', 'POST')->name('user-register');
-        $app->map('/user/profile/:slug', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
+        $app->map('/user/profile/:stub', array($this, 'profile'))->via('GET', 'POST')->name('user-profile');
     }
 
     /**
@@ -106,23 +107,23 @@ class UserController extends BaseController
     /**
      * User profile page
      *
-     * @param  string $slug User's slug (usually username)
+     * @param  string $stub User's stub (usually username)
      * @return void
      */
-    public function profile($slug)
+    public function profile($stub)
     {
         $keyPrefix = $this->cfg['redis']['keyPrefix'];
         $cache = new CacheService($keyPrefix);
 
         $userDb = new UserDb($cache);
-        $userUri = $userDb->getUriFor($slug);
+        $userUri = $userDb->getUriFor($stub);
 
 
         $userApi = new UserApi($this->cfg, $this->accessToken, $userDb);
         if ($userUri) {
             $user = $userApi->getUser($userUri);
         } else {
-            $user = $userApi->getUserByUsername($slug);
+            $user = $userApi->getUserByStub($stub);
             if (!$user) {
                 throw new Slim_Exception_Pass('Page not found', 404);
             }
@@ -147,6 +148,7 @@ class UserController extends BaseController
                     // event not cached yet
                     $eventApi = new EventApi($this->cfg, $this->accessToken, $eventDb);
                     $event = $eventApi->getEvent($talk->getEventUri());
+                    $eventDb->save($event);
                     $e = $eventDb->load('uri', $talk->getEventUri());
                 }
                 $event_friendly_names[$talk->getApiUri()] = $e['url_friendly_name'];

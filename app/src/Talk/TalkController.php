@@ -5,6 +5,8 @@ use Application\BaseController;
 use Application\CacheService;
 use Event\EventDb;
 use Event\EventApi;
+use User\UserDb;
+use User\UserApi;
 use Slim_Exception_Pass;
 
 class TalkController extends BaseController
@@ -44,6 +46,24 @@ class TalkController extends BaseController
 
         $talkApi = new TalkApi($this->cfg, $this->accessToken, $talkDb);
         $talk = $talkApi->getTalk($talkUri, true);
+
+        $userDb = new UserDb($cache);
+        $userApi = new UserApi($this->cfg, $this->accessToken, $userDb);
+        $speakers = $talk->getSpeakers();
+        foreach ($speakers as $key => $speaker) {
+            $stub = false;
+            if (isset($speaker->speaker_uri) && $speaker->speaker_uri) {
+                $stub = $userDb->getStubFor($speaker->speaker_uri);
+                if (!$stub) {
+                    $user = $userApi->getUser($speaker->speaker_uri);
+                    if ($user) {
+                        $userDb->save($user);
+                        $stub = $user->getStub();
+                    }
+                }
+            }
+            $speakers[$key]->stub = $stub;
+        }
 
         $comments = $talkApi->getComments($talk->getCommentUri(), true);
 

@@ -65,6 +65,21 @@ class EventApi extends BaseApi
     }
 
     /**
+     * Load a single event
+     *
+     * @param string $uri The API's uri for this event
+     * @return EventEntity The event we found, or false if something went wrong
+     */
+    public function getEvent($uri)
+    {
+        $event_list = json_decode($this->apiGet($uri));
+        $event = new EventEntity($event_list->events[0]);
+
+        return $event;
+
+    }
+
+    /**
      * Look up this friendlyUrl in the DB, get an API endpoint, fetch data
      * and return us an event
      *
