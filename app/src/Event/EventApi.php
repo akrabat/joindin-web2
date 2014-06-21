@@ -66,6 +66,29 @@ class EventApi extends BaseApi
     }
 
     /**
+     * Retrieve an event from the API
+     *
+     * @param  string $url Event's URI
+     * @return mixed       stdClass of event data or false
+     */
+    public function getEvent($url)
+    {
+        $result = $this->apiGet($url, array('verbose'=>'yes'));
+
+        if ($result) {
+            $data = json_decode($result);
+            if ($data) {
+                if (isset($data->events) && isset($data->events[0])) {
+                    $event = new EventEntity($data->events[0]);
+                    return $event;
+                }
+
+            }
+        }
+        return false;
+    }
+
+    /**
      * Look up this friendlyUrl in the DB, get an API endpoint, fetch data
      * and return us an event
      *
@@ -81,11 +104,7 @@ class EventApi extends BaseApi
             return false;
         }
 
-        $event_list = json_decode($this->apiGet($event['verbose_uri']));
-        $event = new EventEntity($event_list->events[0]);
-
-        return $event;
-
+        return $this->getEvent($event['verbose_uri']);
     }
 
     /**
@@ -103,10 +122,7 @@ class EventApi extends BaseApi
             return false;
         }
 
-        $event_list = json_decode($this->apiGet($event['verbose_uri']));
-        $event = new EventEntity($event_list->events[0]);
-
-        return $event;
+        return $this->getEvent($event['verbose_uri']);
     }
 
     /**
