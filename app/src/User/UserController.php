@@ -149,19 +149,16 @@ class UserController extends BaseController
             foreach ($talks as $talk) {
                 $event = $eventApi->getEvent($talk->getEventUri());
                 $eventDb->save($event);
-                $e = $eventDb->load('uri', $talk->getEventUri());
                 $events[$talk->getEventUri()] = $event;
-                $eventStubNames[$talk->getApiUri()] = $e['url_friendly_name'];
             }
         }
 
         echo $this->render(
             'User/profile.html.twig',
             array(
-                'user'           => $user,
-                'talks'          => $talks,
-                'events'         => $events,
-                'eventStubNames' => $eventStubNames,
+                'user'   => $user,
+                'talks'  => $talks,
+                'events' => $events,
             )
         );
     }

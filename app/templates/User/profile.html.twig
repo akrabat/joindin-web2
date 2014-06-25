@@ -10,14 +10,18 @@
 <h2>Talks</h2>
 <div class="talks row">
 <div class="col-xs-12">
-{% for talk in talks %} {{dump(events[talk.getApiUrl])}}
+{% for talk in talks %}
+    {% set event = events[talk.getEventUri] %}
     <div class="pull-right">
         {% include '_common/rating.html.twig' with {'rating': talk.getAverageRating} %}
     </div>
-    <p>
-        <a class="title" href="{{ urlForTalk(eventStubNames[talk.getApiUri], talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a>
-    </p>
-
+    <div>
+        <a class="title" href="{{ urlForTalk(event.getUrlFriendlyName, talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a>
+        <p class="meta">
+            at <a href="{{ eventUrl }}">{{ event.getName }}</a>
+            on {{talk.getStartDate | date('M d Y')}}
+        </p>
+    </div>
 {% endfor %}
 </div>
 </div>
