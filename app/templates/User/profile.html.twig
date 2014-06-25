@@ -1,0 +1,26 @@
+{% extends '/layout.html.twig' %}
+
+{% block body %}
+<h1 class="title">{{ user.getFullName }}</h1>
+{% if user.getTwitterUsername %}
+<p><a href="https://twitter.com/{{ user.getTwitterUsername }}">@{{ user.getTwitterUsername }}</a></p>
+{% endif %}
+
+{% if talks %}
+<h2>Talks</h2>
+<div class="talks row">
+<div class="col-xs-12">
+{% for talk in talks %} {{dump(events[talk.getApiUrl])}}
+    <div class="pull-right">
+        {% include '_common/rating.html.twig' with {'rating': talk.getAverageRating} %}
+    </div>
+    <p>
+        <a class="title" href="{{ urlForTalk(eventStubNames[talk.getApiUri], talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a>
+    </p>
+
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% endblock %}

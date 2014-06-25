@@ -224,6 +224,11 @@ table.schedule a:hover span.speaker {
     height: 2em;
 }
 
+/* User profile page */
+.talks .title {
+    font-size: 1.3em;
+}
+/* End user profile page */
 
 
 @media (max-width: 768px) {

@@ -35,4 +35,22 @@ class UserApi extends BaseApi
         }
         return false;
     }
+
+    public function getUserByUsername($username)
+    {
+        $url = $this->baseApiUrl . '/v2.1/users';
+        $result = $this->apiGet($url, array('verbose' => 'yes', 'username' => $username ));
+
+        if ($result) {
+            $data = json_decode($result);
+            if ($data) {
+                if (isset($data->users) && isset($data->users[0])) {
+                    $user = new UserEntity($data->users[0]);
+                    return $user;
+                }
+
+            }
+        }
+        return false;
+    }
 }

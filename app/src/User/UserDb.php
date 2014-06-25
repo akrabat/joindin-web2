@@ -12,7 +12,6 @@ class UserDb extends BaseDb
         $data = array(
             'uri'  => $user->getUri(),
             'username' => $user->getUsername(),
-            'slug' => $user->getUsername(),
             'verbose_uri'  => $user->getVerboseUri()
         );
 
@@ -22,6 +21,13 @@ class UserDb extends BaseDb
             $data = array_merge($savedUser, $data);
         }
 
+        $this->cache->save($this->keyName, $data, 'username', $user->getUsername());
         $this->cache->save($this->keyName, $data, 'uri', $user->getUri());
+    }
+
+    public function getUriFor($username)
+    {
+        $data = $this->cache->load('users', 'username', $username);
+        return $data['uri'];
     }
 }
