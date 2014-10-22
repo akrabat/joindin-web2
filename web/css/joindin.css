@@ -54,6 +54,11 @@ footer div.row {
     margin-bottom: 1em;
 }
 
+.comment .rating {
+    float: left;
+    margin-right: 0.5em;
+}
+
 .comment h3 {
     margin-top: 0;
     margin-bottom: 0;
