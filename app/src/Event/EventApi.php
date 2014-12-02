@@ -89,6 +89,28 @@ class EventApi extends BaseApi
     }
 
     /**
+     * Gets event data from api on single talk
+     *
+     * @param string $event_uri  API talk uri
+     * @param bool $verbose  Return verbose data?
+     * @return TalkEntity
+     */
+    public function getEvent($event_uri, $verbose = true)
+    {
+        $params = array();
+        if ($verbose) {
+            $params['verbose'] = 'yes';
+        }
+
+        $talk_list = (array)json_decode($this->apiGet($event_uri, $params));
+        if (isset($talk_list['events']) && isset($talk_list['events'][0])) {
+            return new EventEntity($talk_list['events'][0]);
+        }
+        
+        return false;
+    }
+
+    /**
      * Get comments for given event
      * @param $comment_uri
      * @param bool $verbose
@@ -201,7 +223,7 @@ class EventApi extends BaseApi
      *
      * @return array
      */
-    private function queryEvents($url)
+    public function queryEvents($url)
     {
         $events = (array)json_decode($this->apiGet($url));
         $meta   = array_pop($events);
