@@ -18,7 +18,7 @@
                         </div>
                         <div class="meta pull-right-sm pull-right-md pull-left-xs">
                             {% if comment.getUserDisplayName %}
-                                {{ comment.getUserDisplayName }}
+                                {{ profileLink(comment.getUserDisplayName, comment.getUserUri) }}
                                 {% for speaker in talk.speakers %}
                                     {%  if speaker.speaker_uri is not null and speaker.speaker_uri == comment.getUserUri %}
                                         <strong>(Speaker)</strong>
