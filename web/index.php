@@ -51,6 +51,9 @@ $app->view()->appendData(
     )
 );
 
+// Add Twig extensions
+$app->view()->parserExtensions[] = new User\Twig\ProfileLinks($config['slim']['custom']);
+
 // set Twig base folder, view folder and initialize Joindin filters
 $app->view()->parserDirectory = realpath(__DIR__ . '/../vendor/Twig/lib/Twig');
 $app->view()->setTemplatesDirectory('../app/templates');
