@@ -25,15 +25,15 @@ class ApplicationController extends BaseController
         $keyPrefix = $this->cfg['redisKeyPrefix'];
 
         $cache = new CacheService($keyPrefix);
-        $event_collection = new EventApi($this->cfg, $this->accessToken, new EventDb($cache));
-        $hot_events = $event_collection->getEvents($perPage, $start, 'hot');
-        $cfp_events = $event_collection->getEvents(10, 0, 'cfp', true);
+        $eventApi = new EventApi($this->cfg, $this->accessToken, new EventDb($cache));
+        $hotEvents = $eventApi->getEvents($perPage, $start, 'hot');
+        $cfpEvents = $eventApi->getEvents(10, 0, 'cfp', true);
 
         $this->render(
             'Application/index.html.twig',
             array(
-                'events' => $hot_events,
-                'cfp_events' => $cfp_events,
+                'events' => $hotEvents,
+                'cfp_events' => $cfpEvents,
                 'page' => $page,
             )
         );
