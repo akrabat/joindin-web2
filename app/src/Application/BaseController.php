@@ -19,6 +19,7 @@ abstract class BaseController
         $this->cfg = $this->getConfig();
 
         $this->accessToken = isset($_SESSION['access_token']) ? $_SESSION['access_token'] : null;
+        var_dump($this->accessToken);
     }
 
     private function getConfig()
