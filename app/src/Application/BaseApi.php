@@ -103,7 +103,7 @@ class BaseApi
         if ($this->accessToken) {
             $contextOpts['http']['header'] .= "\r\nAuthorization: OAuth {$this->accessToken}";
         }
-        
+        var_dump($contextOpts);
         $streamContext = stream_context_create($contextOpts);
         $result = file_get_contents($url, 0, $streamContext);
         if (false === $result) {
