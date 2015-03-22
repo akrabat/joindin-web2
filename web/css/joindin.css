@@ -1,5 +1,5 @@
 body {
-    padding-top: 50px;
+    padding-top: 70px;
     font-size: 13px;
 }
 @media (min-width: 1200px) {
@@ -42,13 +42,43 @@ nav.navbar a.navbar-brand img {
     padding-right: 10px;
 }
 
+.page-nav {
+    border-top: 1px solid #eee;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-top: 10px;
+    margin-bottom: 0px
+}
+
+.page-nav.admin {
+    margin-top: 0;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    /*background-color: #FFFED0;*/
+    background-color: #FFFEDC;
+}
+.page-nav.admin .nav > li > a:hover, .page-nav.admin .nav > li > a:focus {
+    /*background-color: #eee;*/
+    background-color: #FFFDB2;
+    text-decoration: none;
+}
+
 form.navbar-form {
     margin-top: 10px;
 }
 
+.page-header {
+  margin: 10px 0 20px;
+  padding-bottom: 0;
+}
+
+
 h1 {
     border-bottom: 1px solid #d7dcdf;
-    color: #f90;
+    /*color: #f90;*/
+    /*color: #367997;*/
+    /*color: #2a6496;*/
+    color: #000;
     font-weight: normal;
     margin-bottom: 16px;
 }
@@ -96,6 +126,18 @@ aside > section {
 aside > section > article {
     margin-top: 10px;
 }
+
+.sidebar .panel-title {
+    font-size: 14px;
+}
+
+.title h1, .title h2 {
+    margin-top: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+
 
 @media (min-width: 768px) {
     /* additional 10px of separation when asides are rendered as a sidebar */
@@ -262,10 +304,10 @@ table.schedule span.speaker a:hover {
     background-position: 0 -21px;
 }
 
-#comments form div {
+/*#comments form div {
     clear: left;
 }
-
+*/
 #comments form input {
     margin-top: 1em;
 }
@@ -400,8 +442,9 @@ form ul.errors {
 .user-details {
     color: #777;
     font-weight: 400;
-    font-size: 1.2em;
+    /*font-size: 1.2em;*/
     line-height: 1;
+    margin-top: 10px;
 }
 
 .search-results .talk .rating {

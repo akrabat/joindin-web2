@@ -1,5 +1,5 @@
 {# default to sidebar_col_width of 3 if not set #}
-{% if not sidebar_col_width %} {% set sidebar_col_width = 3 %} {% endif %}
+{% if sidebar_col_width is not defined %} {% set sidebar_col_width = 3 %} {% endif %}
 {% set main_col_width = 12 - sidebar_col_width %}
 <!DOCTYPE html>
 <html>
@@ -69,12 +69,17 @@
 
     <div class="container-fluid">
         <div class="row">
+            {% if sidebar_col_width %}
             <aside class="col-xs-12 col-sm-{{ sidebar_col_width }} pull-right-sm sidebar">
                 {% block topAside %}{% endblock %}
             </aside>
+            {% endif %}
+            
             <div class="col-xs-12 col-sm-{{ main_col_width }}" >
                 {% block body %}{% endblock %}
             </div>
+
+            {% if sidebar_col_width %}
             <aside class="col-xs-12 col-sm-{{ sidebar_col_width }} pull-right-sm sidebar">
                 {% block extraAside %}{% endblock %}
 
@@ -87,6 +92,7 @@
                     </p>
                 </section>
             </aside>
+            {% endif %}
         </div>
     </div>
 

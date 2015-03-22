@@ -14,26 +14,8 @@
 {% endblock %}
 
 {% block body %}
-    {% include 'Event/_common/event_header.html.twig' %}
+    {% include 'Talk/_common/talk_header.html.twig' %}
     <section>
-        <h3>
-            {{ talk.getTitle }}
-            {% if talk.getType != 'Talk' %}
-                <span class="label talk-type-label {{ talk.getTypeClass }}">{{ talk.getType }}</span>
-            {% endif %}
-        </h3>
-        {% if talk.getSpeakers %}
-            <h4>
-                {% for speaker in talk.getSpeakers %}
-                    {{ speaker.speaker_name }}{% if not loop.last %}, {% endif %}
-                {% endfor %}
-                <small>{{ talk.getStartDateTime()|date('j F Y \\a\\t H:i', event.getFullTimezone) }} &mdash; {{ talk.language }}</small>
-            </h4>
-        {% endif %}
-
-        <ul class="list-inline">
-            {% if talk.slidesLink is not empty %}<li><a href="{{ talk.slidesLink }}">View Slides</a></li>{% endif %}
-        </ul>
 
         <p>{{ talk.getDescription | nl2br }}</p>
     </section>
@@ -52,12 +34,13 @@
                             <h2 class="panel-title">Write a comment</h2>
                         </div>
                         <div class="panel-body">
+                           
                             <form method="POST" action="{{ urlFor('talk-add-comment', {'eventSlug': event.getUrlFriendlyName, 'talkSlug': talk.getUrlFriendlyTalkTitle}) }}">
                                 {% if flash.getMessages.error %}
-                                    <div class="alert alert-danger">{{flash.getMessages.error}}</div>
+                                    <div class="alert alert-danger col-xs-12">{{flash.getMessages.error}}</div>
                                 {% endif %}
-                                <div class="rating-vote-container">
-                                    <div id="rating_container" class="form-group">
+                                <div class="row">
+                                    <div id="rating_container" class="form-group col-xs-12 col-sm-3" style="max-width: 130px">
                                         <label for="rating">Rate the talk:</label>
                                         <select id="rating" name="rating">
                                             <option value="0"></option>
@@ -71,15 +54,20 @@
                                         <div class="rateit" id="rating_widget" data-rateit-backingfld="#rating" data-rateit-starwidth="23" data-rateit-starheight="21" data-rateit-resetable="false"></div>
                                         <div id="rating_value"></div>
                                     </div>
+                                    <div class="col-xs-12 col-sm-9">
+                                        <div class="form-group ">
+                                            <label for="comment">Your comment:</label>
+                                            <textarea id="comment" class="form-control" name="comment"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Submit comment</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="comment">Your comment:</label>
-                                    <textarea id="comment" class="form-control" name="comment"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Submit comment</button>
-                                </div>
+
                             </form>
+
+
                         </div>
                     {% else %}
                         <div class="panel-heading">
@@ -106,11 +94,4 @@
 {% endblock %}
 
 {% block extraAside %}
-    <section>
-        {% include '_common/rating.html.twig' with {'rating': talk.getAverageRating, 'style': 'vertical'} %}
-    </section>
-    <section class="short-url">
-        <label class="control-label">Short URL:</label>
-        <p><a href="{{ shortUrlForTalk(talk.getStub) }}">{{ shortUrlForTalk(talk.getStub) }}</a></p>
-    </section>
 {% endblock %}

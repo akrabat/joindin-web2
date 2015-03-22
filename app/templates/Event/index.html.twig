@@ -1,6 +1,14 @@
 {% extends '/layout.html.twig' %}
 
 {% block body %}
+    {% if user.username == 'imaadmin' %} {# Temp! - use can_edit when we have that! #}
+    <nav class="page-nav admin">
+        <ul class="nav nav-pills">
+            <li><a href="#">Pending events</a></li>
+            <li><a href="#">Create event</a></li>
+        </ul>
+    </nav>
+    {% endif %}
     <h1 class="title">Upcoming events</h1>
     <div>
         {% for event in events.events %}
@@ -17,6 +25,6 @@
             Know of an event happening? Let us know! We love to get the word out about
             events the community would be interested in and you can help us spread the word!
         </p>
-        <a href="{{ urlFor('event-submit') }}" class="btn btn-warning col-xs-12">Submit</a>
+        <a href="{{ urlFor('event-submit') }}" class="btn btn-primary col-xs-12">Submit</a>
     </section>
 {% endblock %}

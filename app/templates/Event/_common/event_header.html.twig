@@ -4,7 +4,7 @@
             <img src="{{ event.getIcon|img_path("event_icons") }}">
         </div>
         <div class="col-xs-12 col-sm-10 title">
-            <h2>
+            <h1>
                 {{ event.getName }}
                 <br>
                 <small>
@@ -13,34 +13,36 @@
 
                     at <a href="{{ urlFor('event-map', {"friendly_name": event.getUrlFriendlyName}) }}">{{ event.getLocation }}</a>
 
-                    {% include 'Event/_common/attending_string.html.twig' %}
+                    
 
                     {% include 'Event/_common/attending.html.twig' %}
                 </small>
-            </h2>
-
-            {% if event.getTags %}
-            <p>
-                {% for tag in event.getTags %}
-                    <a href="{{ urlFor('search-events') }}?tag={{ tag }}">
-                        <span class="label label-default">{{ tag }}</span>
-                    </a>
-                {% endfor %}
-            </p>
-            {% endif %}
-
-            </p>
-            <nav>
-                <ul class="nav nav-pills">
-                    <li><a href="{{ urlFor('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">Details</a></li>
-                    <li><a href="{{ urlFor('event-schedule', {"friendly_name": event.getUrlFriendlyName}) }}">Schedule</a></li>
-                    <li><a href="{{ urlFor('event-map', {"friendly_name": event.getUrlFriendlyName}) }}">Map</a></li>
-                    <li><a href="{{ urlFor('event-talk-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Recent comments</a></li>
-                    {% if event.getCanEdit %}
-                    <li><a href="{{ urlFor('event-edit', {"friendly_name": event.getUrlFriendlyName}) }}">Edit</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+            </h1>
         </div>
     </div>
+    <nav class="page-nav">
+        <ul class="nav nav-pills">
+            <li><a href="{{ urlFor('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">Details</a></li>
+            <li><a href="{{ urlFor('event-schedule', {"friendly_name": event.getUrlFriendlyName}) }}">Schedule</a></li>
+            <li><a href="{{ urlFor('event-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Comments</a></li>
+            <li><a href="{{ urlFor('event-talk-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Recent comments</a></li>
+            {# {% if event.getCanEdit %}
+            <li><a href="{{ urlFor('event-edit', {"friendly_name": event.getUrlFriendlyName}) }}">Edit</a></li>
+            {% endif %} #}
+        </ul>
+    </nav>
+    {% if event.getCanEdit %}
+    <nav class="page-nav admin">
+        <ul class="nav nav-pills">
+            <li><a href="{{ urlFor('event-edit', {"friendly_name": event.getUrlFriendlyName}) }}">Edit event</a></li>
+            <li><a href="#">Edit tracks</a></li>
+            <li><a href="#">Add new talk</a></li>
+            <li><a href="#">Pending claims</a></li>
+            <li><a href="#">Import talks</a></li>
+            <li><a style="color: #CC0000" href="#">Delete event</a></li>
+        </ul>
+    </nav>
+    {% endif %}
 </div>
+
+

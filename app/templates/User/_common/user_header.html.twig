@@ -1,0 +1,55 @@
+    <section class="page-header">
+        <div class="row user-profile">
+            <div class="col-xs-12">
+                <div class="pull-left">
+                    <img src="{{ gravatar(thisUser.getGravatarHash, 100) }}">
+                </div>
+                <div>
+                    <h2>{{ thisUser.getFullname }}</h2>
+                    <section class="user-details">
+                        {% if thisUser.getTwitterUsername %}
+                        Twitter: <a href="https://twitter.com/{{ thisUser.getTwitterUsername }}">
+                            @{{ thisUser.getTwitterUsername }}</a>
+                        {% endif %}
+
+                        {# <p class="more">
+                            <a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">
+                                View profile</a>
+                        </p> #}
+                    </section>
+
+                </div>
+            </div>
+        </div>
+        <nav class="page-nav">
+            <ul class="nav nav-pills">
+                <li><a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">Profile</a></li>
+                {% if talks %}
+                <li><a href="{{ urlFor('user-profile-talks', {'username': thisUser.getUsername}) }}">Talks</a></li>
+                {% endif %}
+                {% if events %}
+                <li><a href="{{ urlFor('user-profile-events', {'username': thisUser.getUsername}) }}">Attended events</a></li>
+                {% endif %}
+                {% if talkComments %}
+                <li><a href="{{ urlFor('user-profile-comments', {'username': thisUser.getUsername}) }}">Comments</a></li>
+                {% endif %}
+                {% if hostedEvents %}
+                <li><a href="{{ urlFor('user-profile-hosted', {'username': thisUser.getUsername}) }}">Hosted events</a></li>
+                {% endif %}
+
+                {% if user.username == thisUser.username or user.username == 'imaadmin' %} {# Temp! - use can_edit when we have that! #}
+                <li><a href="#">Edit</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% if user.username == 'imaadmin' %} {# Temp! - use can_edit when we have that! #}
+        <nav class="page-nav admin">
+            <ul class="nav nav-pills">
+                <li><a href="#">Edit this user</a></li>
+                <li><a href="#">List users</a></li>
+                <li><a style="color: #CC0000" href="#">Delete user</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    </section>

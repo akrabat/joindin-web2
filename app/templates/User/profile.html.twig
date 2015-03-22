@@ -3,7 +3,7 @@
 {% block title %}{{ thisUser.getFullname }} - Joind.in{% endblock %}
 
 {% block body %}
-    <section class="page-header">
+   {# <section class="page-header">
         <div class="row user-profile">
             <div class="col-xs-12">
                 <div class="pull-left">
@@ -20,7 +20,8 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> #}
+    {% include 'User/_common/user_header.html.twig' %}
 
     {% set blockCount = 0 %}
     <section class="user-profile-panels">
