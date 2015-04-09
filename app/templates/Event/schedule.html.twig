@@ -6,16 +6,6 @@
     {% include 'Event/_common/event_header.html.twig' %}
 
     <div>
-        <label>Sessions Key</label>
-
-        <div class="container-fluid">
-            <div class="col-xs-12 col-md-2 col-md-offset-1 talk-type-keynote key">Keynote</div>
-            <div class="col-xs-12 col-md-2 talk-type-talk key">Talk</div>
-            <div class="col-xs-12 col-md-2 talk-type-workshop key">Workshop</div>
-            <div class="col-xs-12 col-md-2 talk-type-socialevent key">Social</div>
-            <div class="col-xs-12 col-md-2 talk-type-eventrelated key">Event Related</div>
-        </div>
-
         {% for day in eventDays %}
         <h1>{{ day.date }}</h1>
         <table class="schedule table table-bordered">
@@ -112,4 +102,21 @@
         </table>
         {% endfor %}
     </div>
+{% endblock %}
+
+{% block extraAside %}
+    <section>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sessions Key</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-xs-12 col-md-12 talk-type-keynote key">Keynote</div>
+                <div class="col-xs-12 col-md-12 talk-type-talk key">Talk</div>
+                <div class="col-xs-12 col-md-12 talk-type-workshop key">Workshop</div>
+                <div class="col-xs-12 col-md-12 talk-type-socialevent key">Social</div>
+                <div class="col-xs-12 col-md-12 talk-type-eventrelated key">Event Related</div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
