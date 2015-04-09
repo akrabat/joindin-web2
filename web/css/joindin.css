@@ -262,10 +262,6 @@ table.schedule span.speaker a:hover {
     background-position: 0 -21px;
 }
 
-#comments form div {
-    clear: left;
-}
-
 #comments form input {
     margin-top: 1em;
 }
@@ -277,6 +273,9 @@ table.schedule span.speaker a:hover {
     height: 2em;
 }
 
+#comments form textarea {
+    height: 80px;
+}
 .apps img {
     border: 1px solid #ccc;
 }
