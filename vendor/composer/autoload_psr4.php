@@ -16,7 +16,11 @@ return array(
     'Symfony\\Component\\Form\\' => array($vendorDir . '/symfony/form'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
     'Symfony\\Bridge\\Twig\\' => array($vendorDir . '/symfony/twig-bridge'),
-    'Slim\\Views\\' => array($vendorDir . '/slim/views'),
+    'Slim\\Views\\' => array($vendorDir . '/slim/twig-view/src'),
+    'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Org_Heigl\\DateRange\\' => array($vendorDir . '/org_heigl/daterange/src'),
     'Org_Heigl\\DateRangeTest\\' => array($vendorDir . '/org_heigl/daterange/tests'),
+    'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
+    'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
 );

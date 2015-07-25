@@ -1,271 +1,407 @@
 <?php
 /**
- * Slim - a micro PHP 5 framework
+ * Slim Framework (http://slimframework.com)
  *
- * @author      Josh Lockhart <info@slimframework.com>
- * @copyright   2011 Josh Lockhart
- * @link        http://www.slimframework.com
- * @license     http://www.slimframework.com/license
- * @version     2.6.1
- *
- * MIT LICENSE
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * @link      https://github.com/codeguy/Slim
+ * @copyright Copyright (c) 2011-2015 Josh Lockhart
+ * @license   https://github.com/codeguy/Slim/blob/master/LICENSE (MIT License)
  */
+namespace Slim\Tests\Http;
 
-class ResponseTest extends PHPUnit_Framework_TestCase
+use Slim\Http\Response;
+use Slim\Http\Headers;
+use Slim\Http\Cookies;
+use Slim\Http\Body;
+
+class ResponseTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstructWithoutArgs()
-    {
-        $res = new \Slim\Http\Response();
+    /*******************************************************************************
+     * Create
+     ******************************************************************************/
 
-        $this->assertAttributeEquals(200, 'status', $res);
-        $this->assertAttributeEquals('', 'body', $res);
+    public function testConstructoWithDefaultArgs()
+    {
+        $response = new Response();
+
+        $this->assertAttributeEquals(200, 'status', $response);
+        $this->assertAttributeInstanceOf('\Slim\Http\Headers', 'headers', $response);
+        $this->assertAttributeInstanceOf('\Psr\Http\Message\StreamInterface', 'body', $response);
     }
 
-    public function testConstructWithArgs()
+    public function testConstructorWithCustomArgs()
     {
-        $res = new \Slim\Http\Response('Foo', 201);
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(404, $headers, $body);
 
-        $this->assertAttributeEquals(201, 'status', $res);
-        $this->assertAttributeEquals('Foo', 'body', $res);
+        $this->assertAttributeEquals(404, 'status', $response);
+        $this->assertAttributeSame($headers, 'headers', $response);
+        $this->assertAttributeSame($body, 'body', $response);
     }
 
-    public function testGetStatus()
+    public function testDeepCopyClone()
     {
-        $res = new \Slim\Http\Response();
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(404, $headers, $body);
+        $clone = clone $response;
 
-        $this->assertEquals(200, $res->getStatus());
+        $this->assertAttributeEquals('1.1', 'protocolVersion', $clone);
+        $this->assertAttributeEquals(404, 'status', $clone);
+        $this->assertAttributeNotSame($headers, 'headers', $clone);
+        $this->assertAttributeNotSame($body, 'body', $clone);
     }
 
-    public function testSetStatus()
+    public function testDisableSetter()
     {
-        $res = new \Slim\Http\Response();
-        $res->setStatus(301);
+        $response = new Response();
+        $response->foo = 'bar';
 
-        $this->assertAttributeEquals(301, 'status', $res);
+        $this->assertFalse(property_exists($response, 'foo'));
+    }
+
+    /*******************************************************************************
+     * Protocol
+     ******************************************************************************/
+
+    public function testGetProtocolVersion()
+    {
+        $response = new Response();
+        $responseProto = new \ReflectionProperty($response, 'protocolVersion');
+        $responseProto->setAccessible(true);
+        $responseProto->setValue($response, '1.0');
+
+        $this->assertEquals('1.0', $response->getProtocolVersion());
+    }
+
+    public function testWithProtocolVersion()
+    {
+        $response = new Response();
+        $clone = $response->withProtocolVersion('1.0');
+
+        $this->assertAttributeEquals('1.0', 'protocolVersion', $clone);
     }
 
     /**
-     * DEPRECATION WARNING!
+     * @expectedException \InvalidArgumentException
      */
-    public function testStatusGetOld()
+    public function testWithProtocolVersionInvalidThrowsException()
     {
-        $res = new \Slim\Http\Response('', 201);
-        $this->assertEquals(201, $res->status());
+        $response = new Response();
+        $response->withProtocolVersion('3.0');
+    }
+
+    /*******************************************************************************
+     * Status
+     ******************************************************************************/
+
+    public function testGetStatusCode()
+    {
+        $response = new Response();
+        $responseStatus = new \ReflectionProperty($response, 'status');
+        $responseStatus->setAccessible(true);
+        $responseStatus->setValue($response, '404');
+
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+    public function testWithStatus()
+    {
+        $response = new Response();
+        $clone = $response->withStatus(302);
+
+        $this->assertAttributeEquals(302, 'status', $clone);
     }
 
     /**
-     * DEPRECATION WARNING!
+     * @expectedException \InvalidArgumentException
      */
-    public function testStatusSetOld()
+    public function testWithStatusInvalidStatusCodeThrowsException()
     {
-        $res = new \Slim\Http\Response();
-        $prop = new \ReflectionProperty($res, 'status');
-        $prop->setAccessible(true);
-        $res->status(301);
-
-        $this->assertEquals(301, $prop->getValue($res));
+        $response = new Response();
+        $response->withStatus(800);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWithStatusInvalidReasonPhraseThrowsException()
+    {
+        $response = new Response();
+        $response->withStatus(200, null);
+    }
+
+    public function testGetReasonPhrase()
+    {
+        $response = new Response();
+        $responseStatus = new \ReflectionProperty($response, 'status');
+        $responseStatus->setAccessible(true);
+        $responseStatus->setValue($response, '404');
+
+        $this->assertEquals('Not Found', $response->getReasonPhrase());
+    }
+
+    public function testGetCustomReasonPhrase()
+    {
+        $response = new Response();
+        $clone = $response->withStatus(200, 'Custom Phrase');
+
+        $this->assertEquals('Custom Phrase', $clone->getReasonPhrase());
+    }
+
+    /*******************************************************************************
+     * Headers
+     ******************************************************************************/
+
+    public function testGetHeaders()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $headers->add('X-Foo', 'two');
+        $headers->add('X-Foo', 'three');
+        $response = new Response(200, $headers);
+        $shouldBe = [
+            'X-Foo' => [
+                'one',
+                'two',
+                'three',
+            ],
+        ];
+        $this->assertEquals($shouldBe, $response->getHeaders());
+    }
+
+    public function testHasHeader()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $response = new Response(200, $headers);
+
+        $this->assertTrue($response->hasHeader('X-Foo'));
+        $this->assertFalse($response->hasHeader('X-Bar'));
+    }
+
+    public function testGetHeaderLine()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $headers->add('X-Foo', 'two');
+        $headers->add('X-Foo', 'three');
+        $response = new Response(200, $headers);
+
+        $this->assertEquals('one,two,three', $response->getHeaderLine('X-Foo'));
+        $this->assertEquals('', $response->getHeaderLine('X-Bar'));
+    }
+
+    public function testGetHeader()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $headers->add('X-Foo', 'two');
+        $headers->add('X-Foo', 'three');
+        $response = new Response(200, $headers);
+
+        $this->assertEquals(['one', 'two', 'three'], $response->getHeader('X-Foo'));
+        $this->assertEquals([], $response->getHeader('X-Bar'));
+    }
+
+    public function testWithHeader()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $response = new Response(200, $headers);
+        $clone = $response->withHeader('X-Foo', 'bar');
+
+        $this->assertEquals('bar', $clone->getHeaderLine('X-Foo'));
+    }
+
+    public function testWithAddedHeader()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $response = new Response(200, $headers);
+        $clone = $response->withAddedHeader('X-Foo', 'two');
+
+        $this->assertEquals('one,two', $clone->getHeaderLine('X-Foo'));
+    }
+
+    public function testWithoutHeader()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $headers->add('X-Bar', 'two');
+        $response = new Response(200, $headers);
+        $clone = $response->withoutHeader('X-Foo');
+        $shouldBe = [
+            'X-Bar' => ['two'],
+        ];
+
+        $this->assertEquals($shouldBe, $clone->getHeaders());
+    }
+
+    /*******************************************************************************
+     * Body
+     ******************************************************************************/
 
     public function testGetBody()
     {
-        $res = new \Slim\Http\Response();
-        $property = new \ReflectionProperty($res, 'body');
-        $property->setAccessible(true);
-        $property->setValue($res, 'foo');
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(404, $headers, $body);
 
-        $this->assertEquals('foo', $res->getBody());
+        $this->assertSame($body, $response->getBody());
     }
 
-    public function testSetBody()
+    public function testWithBody()
     {
-        $res = new \Slim\Http\Response('bar');
-        $res->setBody('foo'); // <-- Should replace body
+        $headers = new Headers();
+        $body = new Body(fopen('php://temp', 'r+'));
+        $body2 = new Body(fopen('php://temp', 'r+'));
+        $response = new Response(404, $headers, $body);
+        $clone = $response->withBody($body2);
 
-        $this->assertAttributeEquals('foo', 'body', $res);
+        $this->assertAttributeSame($body2, 'body', $clone);
     }
 
-    public function testWrite()
-    {
-        $res = new \Slim\Http\Response();
-        $property = new \ReflectionProperty($res, 'body');
-        $property->setAccessible(true);
-        $property->setValue($res, 'foo');
-        $res->write('bar'); // <-- Should append to body
-
-        $this->assertAttributeEquals('foobar', 'body', $res);
-    }
-
-    public function testLength()
-    {
-        $res = new \Slim\Http\Response('foo'); // <-- Sets body and length
-
-        $this->assertEquals(3, $res->getLength());
-    }
-
-    public function testFinalize()
-    {
-        $res = new \Slim\Http\Response();
-        $resFinal = $res->finalize();
-
-        $this->assertTrue(is_array($resFinal));
-        $this->assertEquals(3, count($resFinal));
-        $this->assertEquals(200, $resFinal[0]);
-        $this->assertInstanceOf('\Slim\Http\Headers', $resFinal[1]);
-        $this->assertEquals('', $resFinal[2]);
-    }
-
-    public function testFinalizeWithEmptyBody()
-    {
-        $res = new \Slim\Http\Response('Foo', 304);
-        $resFinal = $res->finalize();
-
-        $this->assertEquals('', $resFinal[2]);
-    }
-
-    public function testRedirect()
-    {
-        $res = new \Slim\Http\Response();
-        $res->redirect('/foo');
-
-        $pStatus = new \ReflectionProperty($res, 'status');
-        $pStatus->setAccessible(true);
-
-        $this->assertEquals(302, $pStatus->getValue($res));
-        $this->assertEquals('/foo', $res->headers['Location']);
-    }
+    /*******************************************************************************
+     * Behaviors
+     ******************************************************************************/
 
     public function testIsEmpty()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(404);
-        $r2->setStatus(201);
-        $this->assertFalse($r1->isEmpty());
-        $this->assertTrue($r2->isEmpty());
-    }
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 201);
 
-    public function testIsClientError()
-    {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(404);
-        $r2->setStatus(500);
-        $this->assertTrue($r1->isClientError());
-        $this->assertFalse($r2->isClientError());
-    }
-
-    public function testIsForbidden()
-    {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(403);
-        $r2->setStatus(500);
-        $this->assertTrue($r1->isForbidden());
-        $this->assertFalse($r2->isForbidden());
+        $this->assertTrue($response->isEmpty());
     }
 
     public function testIsInformational()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(100);
-        $r2->setStatus(200);
-        $this->assertTrue($r1->isInformational());
-        $this->assertFalse($r2->isInformational());
-    }
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 100);
 
-    public function testIsNotFound()
-    {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(404);
-        $r2->setStatus(200);
-        $this->assertTrue($r1->isNotFound());
-        $this->assertFalse($r2->isNotFound());
+        $this->assertTrue($response->isInformational());
     }
 
     public function testIsOk()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(200);
-        $r2->setStatus(201);
-        $this->assertTrue($r1->isOk());
-        $this->assertFalse($r2->isOk());
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 200);
+
+        $this->assertTrue($response->isOk());
     }
 
     public function testIsSuccessful()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r3 = new \Slim\Http\Response();
-        $r1->setStatus(200);
-        $r2->setStatus(201);
-        $r3->setStatus(302);
-        $this->assertTrue($r1->isSuccessful());
-        $this->assertTrue($r2->isSuccessful());
-        $this->assertFalse($r3->isSuccessful());
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 201);
+
+        $this->assertTrue($response->isSuccessful());
     }
 
     public function testIsRedirect()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(307);
-        $r2->setStatus(304);
-        $this->assertTrue($r1->isRedirect());
-        $this->assertFalse($r2->isRedirect());
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 302);
+
+        $this->assertTrue($response->isRedirect());
     }
 
     public function testIsRedirection()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r3 = new \Slim\Http\Response();
-        $r1->setStatus(307);
-        $r2->setStatus(304);
-        $r3->setStatus(200);
-        $this->assertTrue($r1->isRedirection());
-        $this->assertTrue($r2->isRedirection());
-        $this->assertFalse($r3->isRedirection());
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 308);
+
+        $this->assertTrue($response->isRedirection());
+    }
+
+    public function testIsForbidden()
+    {
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 403);
+
+        $this->assertTrue($response->isForbidden());
+    }
+
+    public function testIsNotFound()
+    {
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 404);
+
+        $this->assertTrue($response->isNotFound());
+    }
+
+    public function testIsClientError()
+    {
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 400);
+
+        $this->assertTrue($response->isClientError());
     }
 
     public function testIsServerError()
     {
-        $r1 = new \Slim\Http\Response();
-        $r2 = new \Slim\Http\Response();
-        $r1->setStatus(500);
-        $r2->setStatus(400);
-        $this->assertTrue($r1->isServerError());
-        $this->assertFalse($r2->isServerError());
+        $response = new Response();
+        $prop = new \ReflectionProperty($response, 'status');
+        $prop->setAccessible(true);
+        $prop->setValue($response, 503);
+
+        $this->assertTrue($response->isServerError());
     }
 
-    public function testMessageForCode()
+    public function testToString()
     {
-        $this->assertEquals('200 OK', \Slim\Http\Response::getMessageForCode(200));
-    }
+        $output = 'HTTP/1.1 404 Not Found' . PHP_EOL .
+                  'X-Foo: Bar' . PHP_EOL . PHP_EOL .
+                  'Where am I?';
+        $this->expectOutputString($output);
+        $response = new Response();
+        $response = $response->withStatus(404)->withHeader('X-Foo', 'Bar')->write('Where am I?');
 
-    public function testMessageForCodeWithInvalidCode()
+        echo $response;
+    }
+    function testWithJson()
     {
-        $this->assertNull(\Slim\Http\Response::getMessageForCode(600));
+        $data = ['foo' => 'bar1&bar2'];
+        
+        $response = new Response();
+        $response = $response->withJson($data,201);
+        
+        $this->assertEquals(201,$response->getStatusCode());
+        $this->assertEquals('application/json;charset=utf-8',$response->getHeaderLine('Content-Type'));
+        
+        $body = $response->getBody();
+        $body->rewind();
+        $dataJson = $body->getContents(); //json_decode($body->getContents(),true);
+        
+        $this->assertEquals('{"foo":"bar1&bar2"}',$dataJson);
+        $this->assertEquals($data['foo'],json_decode($dataJson,true)['foo']);
+        
+        // Test encoding option
+        $response = $response->withJson($data,200,JSON_HEX_AMP);
+        
+        $body = $response->getBody();
+        $body->rewind();
+        $dataJson = $body->getContents();
+        
+        $this->assertEquals('{"foo":"bar1\u0026bar2"}',$dataJson);
+        $this->assertEquals($data['foo'],json_decode($dataJson,true)['foo']);
     }
 }

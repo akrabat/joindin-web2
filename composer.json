@@ -16,8 +16,8 @@
     "minimum-stability": "stable",
     "require": {
         "predis/predis":         "~0.8",
-        "slim/slim":             "~2.4",
-        "slim/views":            "~0.1",
+        "slim/slim":             "^3.0@dev",
+        "slim/twig-view":        "^1.0",
         "twig/twig":             "~1.15",
         "symfony/form":          "~2.5",
         "symfony/validator":     "~2.5",

@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     $vendorDir . '/symfony/intl/Resources/stubs/functions.php',
+    $vendorDir . '/nikic/fast-route/src/functions.php',
 );
