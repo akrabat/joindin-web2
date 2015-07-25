@@ -29,27 +29,17 @@ if (is_readable($configFile)) {
 $config['slim']['custom'] = new \Application\Config($config['slim']['custom']);
 
 // initialize Slim
-$app = new \Slim\Slim(
-    array_merge(
-        $config['slim'],
-        array(
-            'view' => new \Slim\Views\Twig(),
-        )
-    )
-);
+$container = new \Slim\Container($config['slim']);
+$app = new \Slim\App($container);
 
-$app->configureMode('development', function () use ($app) {
+if ($config['slim']['mode'] == 'development') {
     error_reporting(-1);
     ini_set('display_errors', 1);
     ini_set('html_errors', 1);
     ini_set('display_startup_errors', 1);
-});
 
-// Pass the current mode to the template, so we can choose to show
-// certain things only if the app is in live/development mode
-$app->view()->appendData(
-    array('slim_mode' => $config['slim']['mode'])
-);
+    $config['slim']['twig']['debug'] = true;
+};
 
 // Other variables needed by the main layout.html.twig template
 $app->view()->appendData(
