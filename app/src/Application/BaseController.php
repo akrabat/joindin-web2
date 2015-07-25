@@ -27,12 +27,17 @@ abstract class BaseController
         return $config;
     }
 
-    protected function render($template, $data = array(), $status = null)
+    protected function render($response, $template, $data = array(), $status = null)
     {
         try {
-            $this->application->render($template, $data, $status);
+            if ($status) {
+                $response = $response->withStatus($status);
+            }
+            return $this->application->view->render($response, $template, $data);
         } catch (Twig_Error_Runtime $e) {
-            $this->application->render(
+            $response = $response->withStatus(500);
+            $this->application->view->render(
+                $response,
                 'Error/app_load_error.html.twig',
                 array(
                     'message' => sprintf(

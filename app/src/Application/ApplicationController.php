@@ -30,6 +30,7 @@ class ApplicationController extends BaseController
         $cfpEvents = $eventApi->getEvents(10, 0, 'cfp', true);
 
         $this->render(
+            $response,
             'Application/index.html.twig',
             array(
                 'events' => $hotEvents,
@@ -39,26 +40,26 @@ class ApplicationController extends BaseController
         );
     }
 
-    public function apps()
+    public function apps($request, $response)
     {
-        $this->render('Application/apps.html.twig');
+        $this->render($response, 'Application/apps.html.twig');
     }
 
     /**
      * Render the about page
      */
-    public function about()
+    public function about($request, $response)
     {
-        $this->render('Application/about.html.twig');
+        $this->render($response, 'Application/about.html.twig');
     }
 
 
     /**
      * Render the notAllowed page
      */
-    public function notAllowed()
+    public function notAllowed($request, $response)
     {
-        $this->render('Application/not-allowed.html.twig');
+        $this->render($response, 'Application/not-allowed.html.twig');
     }
 
     /**
