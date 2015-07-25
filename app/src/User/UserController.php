@@ -19,29 +19,29 @@ class UserController extends BaseController
      *
      * @return void
      */
-    protected function defineRoutes(\Slim\Slim $app)
+    protected function defineRoutes(\Slim\App $app)
     {
-        $app->get('/user/logout', array($this, 'logout'))->name('user-logout');
-        $app->map('/user/login', array($this, 'login'))->via('GET', 'POST')->name('user-login');
-        $app->map('/user/register', array($this, 'register'))->via('GET', 'POST')->name('user-register');
-        $app->get('/user/verification', array($this, 'verification'))->name('user-verification');
-        $app->map('/user/resend-verification', array($this, 'resendVerification'))
-            ->via('GET', 'POST')->name('user-resend-verification');
-        $app->map('/user/username-reminder', array($this, 'remindUsername'))
-            ->via('GET', 'POST')->name('user-username-reminder');
-        $app->map('/user/password-reset', array($this, 'resetPassword'))
-            ->via('GET', 'POST')->name('user-password-reset');
-        $app->map('/user/new-password', array($this, 'newPassword'))
-            ->via('GET', 'POST')->name('user-new-password');
-        $app->get('/user/twitter-login', array($this, 'loginWithTwitter'))->name('twitter-login');
-        $app->get('/user/twitter-access', array($this, 'accessTokenFromTwitter'))->name('twitter-callback');
-        $app->get('/user/:username', array($this, 'profile'))->name('user-profile');
-        $app->get('/user/:username/talks', array($this, 'profileTalks'))->name('user-profile-talks');
-        $app->get('/user/:username/events', array($this, 'profileEvents'))->name('user-profile-events');
-        $app->get('/user/:username/hosted', array($this, 'profileHosted'))->name('user-profile-hosted');
-        $app->get('/user/:username/comments', array($this, 'profileComments'))->name('user-profile-comments');
-        $app->map('/user/:username/edit', array($this, 'profileEdit'))
-            ->via('GET', 'POST')->name('user-profile-edit');
+        $app->get('/user/logout', array($this, 'logout'))->setName('user-logout');
+        $app->map(['GET', 'POST'], '/user/login', array($this, 'login'))->setName('user-login');
+        $app->map(['GET', 'POST'], '/user/register', array($this, 'register'))->setName('user-register');
+        $app->get('/user/verification', array($this, 'verification'))->setName('user-verification');
+        $app->map(['GET', 'POST'], '/user/resend-verification', array($this, 'resendVerification'))
+            ->setName('user-resend-verification');
+        $app->map(['GET', 'POST'], '/user/username-reminder', array($this, 'remindUsername'))
+            ->setName('user-username-reminder');
+        $app->map(['GET', 'POST'], '/user/password-reset', array($this, 'resetPassword'))
+            ->setName('user-password-reset');
+        $app->map(['GET', 'POST'], '/user/new-password', array($this, 'newPassword'))
+            ->setName('user-new-password');
+        $app->get('/user/twitter-login', array($this, 'loginWithTwitter'))->setName('twitter-login');
+        $app->get('/user/twitter-access', array($this, 'accessTokenFromTwitter'))->setName('twitter-callback');
+        $app->get('/user/:username', array($this, 'profile'))->setName('user-profile');
+        $app->get('/user/:username/talks', array($this, 'profileTalks'))->setName('user-profile-talks');
+        $app->get('/user/:username/events', array($this, 'profileEvents'))->setName('user-profile-events');
+        $app->get('/user/:username/hosted', array($this, 'profileHosted'))->setName('user-profile-hosted');
+        $app->get('/user/:username/comments', array($this, 'profileComments'))->setName('user-profile-comments');
+        $app->map(['GET', 'POST'], '/user/:username/edit', array($this, 'profileEdit'))
+            ->setName('user-profile-edit');
     }
 
     /**

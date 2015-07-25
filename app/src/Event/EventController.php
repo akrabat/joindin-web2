@@ -19,23 +19,23 @@ class EventController extends BaseController
 {
     private $itemsPerPage = 10;
 
-    protected function defineRoutes(\Slim\Slim $app)
+    protected function defineRoutes(\Slim\App $app)
     {
         // named routes first; should an event pick the same name then at least our actions take precedence
-        $app->get('/event', array($this, 'index'))->name("events-index");
-        $app->map('/event/submit', array($this, 'submit'))->via('GET', 'POST')->name('event-submit');
-        $app->get('/event/callforpapers', array($this, 'callForPapers'))->name('event-call-for-papers');
-        $app->get('/event/:friendly_name', array($this, 'details'))->name("event-detail");
-        $app->get('/event/:friendly_name/comments', array($this, 'comments'))->name("event-comments");
-        $app->get('/event/:friendly_name/schedule', array($this, 'schedule'))->name("event-schedule");
-        $app->get('/event/:friendly_name/talk-comments', array($this, 'talkComments'))->name("event-talk-comments");
-        $app->post('/event/:friendly_name/add-comment', array($this, 'addComment'))->name('event-add-comment');
-        $app->map('/event/:friendly_name/edit', array($this, 'edit'))->via('GET', 'POST')->name('event-edit');
-        $app->get('/e/:stub', array($this, 'quicklink'))->name("event-quicklink");
+        $app->get('/event', array($this, 'index'))->setName("events-index");
+        $app->map(['GET', 'POST'], '/event/submit', array($this, 'submit'))->setName('event-submit');
+        $app->get('/event/callforpapers', array($this, 'callForPapers'))->setName('event-call-for-papers');
+        $app->get('/event/:friendly_name', array($this, 'details'))->setName("event-detail");
+        $app->get('/event/:friendly_name/comments', array($this, 'comments'))->setName("event-comments");
+        $app->get('/event/:friendly_name/schedule', array($this, 'schedule'))->setName("event-schedule");
+        $app->get('/event/:friendly_name/talk-comments', array($this, 'talkComments'))->setName("event-talk-comments");
+        $app->post('/event/:friendly_name/add-comment', array($this, 'addComment'))->setName('event-add-comment');
+        $app->map(['GET', 'POST'], '/event/:friendly_name/edit', array($this, 'edit'))->setName('event-edit');
+        $app->get('/e/:stub', array($this, 'quicklink'))->setName("event-quicklink");
         $app->get('/event/xhr-attend/:friendly_name', array($this, 'xhrAttend'));
         $app->get('/event/xhr-unattend/:friendly_name', array($this, 'xhrUnattend'));
-        $app->get('/event/attend/:friendly_name', array($this, 'attend'))->name("event-attend");
-        $app->get('/event/unattend/:friendly_name', array($this, 'unattend'))->name("event-unattend");
+        $app->get('/event/attend/:friendly_name', array($this, 'attend'))->setName("event-attend");
+        $app->get('/event/unattend/:friendly_name', array($this, 'unattend'))->setName("event-unattend");
     }
 
     public function index()

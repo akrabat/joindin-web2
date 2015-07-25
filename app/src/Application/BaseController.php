@@ -1,7 +1,7 @@
 <?php
 namespace Application;
 
-use Slim\Slim;
+use Slim\App;
 use Twig_Error_Runtime;
 
 abstract class BaseController
@@ -12,7 +12,7 @@ abstract class BaseController
     protected $accessToken;
     protected $cfg;
 
-    public function __construct(Slim $app)
+    public function __construct(App $app)
     {
         $this->application = $app;
         $this->defineRoutes($app);
@@ -48,5 +48,5 @@ abstract class BaseController
         }
     }
 
-    abstract protected function defineRoutes(Slim $app);
+    abstract protected function defineRoutes(App $app);
 }

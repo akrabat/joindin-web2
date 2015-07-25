@@ -13,12 +13,12 @@ use Slim\Slim;
 class TalkController extends BaseController
 {
 
-    protected function defineRoutes(\Slim\Slim $app)
+    protected function defineRoutes(\Slim\App $app)
     {
-        $app->get('/event/:eventSlug/:talkSlug', array($this, 'index'))->name('talk');
-        $app->post('/event/:eventSlug/:talkSlug/star', array($this, 'star'))->name('talk-star');
-        $app->get('/talk/:talkStub', array($this, 'quick'))->name('talk-quicklink');
-        $app->post('/event/:eventSlug/:talkSlug/add-comment', array($this, 'addComment'))->name('talk-add-comment');
+        $app->get('/event/:eventSlug/:talkSlug', array($this, 'index'))->setName('talk');
+        $app->post('/event/:eventSlug/:talkSlug/star', array($this, 'star'))->setName('talk-star');
+        $app->get('/talk/:talkStub', array($this, 'quick'))->setName('talk-quicklink');
+        $app->post('/event/:eventSlug/:talkSlug/add-comment', array($this, 'addComment'))->setName('talk-add-comment');
     }
 
 

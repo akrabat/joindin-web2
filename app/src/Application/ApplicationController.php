@@ -8,19 +8,19 @@ use User\UserApi;
 
 class ApplicationController extends BaseController
 {
-    protected function defineRoutes(\Slim\Slim $app)
+    protected function defineRoutes(\Slim\App $app)
     {
         $app->get('/', array($this, 'index'));
-        $app->get('/apps', array($this, 'apps'))->name('apps');
-        $app->get('/about', array($this, 'about'))->name('about');
-        $app->get('/not-allowed', array($this, 'notAllowed'))->name('not-allowed');
+        $app->get('/apps', array($this, 'apps'))->setName('apps');
+        $app->get('/about', array($this, 'about'))->setName('about');
+        $app->get('/not-allowed', array($this, 'notAllowed'))->setName('not-allowed');
     }
 
-    public function index()
+    public function index($request, $response)
     {
-        $page = ((int)$this->application->request()->get('page') === 0)
+        $page = ((int)$request->getParam('page') === 0)
             ? 1
-            : $this->application->request()->get('page');
+            : $request->getPara('page');
 
         $perPage = 6;
         $start = ($page -1) * $perPage;
