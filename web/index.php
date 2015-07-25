@@ -64,13 +64,23 @@ View\Filters\initialize($view->getEnvironment(), $app);
 View\Functions\initialize($view->getEnvironment(), $app);
 
 // register error handlers
-$app->error(function (\Exception $e) use ($app) {
-    $app->render('Error/error.html.twig', ['exception' => $e]);
-});
+$container['errorHandler'] = function ($c) use ($view) {
+    return function ($request, $response) use ($c, $view) {
+        return $c['response']
+            ->withStatus(404)
+            ->withHeader('Content-Type', 'text/html')
+            ->write($view->fetch('Error/error.html.twig'));
+    };
+};
 
-$app->notFound(function () use ($app) {
-    $app->render('Error/404.html.twig');
-});
+$container['notFoundHandler'] = function ($c) use ($view) {
+    return function ($request, $response) use ($c, $view) {
+        return $c['response']
+            ->withStatus(404)
+            ->withHeader('Content-Type', 'text/html')
+            ->write($view->fetch('Error/404.html.twig'));
+    };
+};
 
 // register middlewares
 $app->add(new Middleware\ValidationMiddleware());
