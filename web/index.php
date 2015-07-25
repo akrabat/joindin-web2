@@ -41,31 +41,27 @@ if ($config['slim']['mode'] == 'development') {
     $config['slim']['twig']['debug'] = true;
 };
 
-// Other variables needed by the main layout.html.twig template
-$app->view()->appendData(
-    array(
-        'google_analytics_id' => $config['slim']['custom']['googleAnalyticsId'],
-        'user' => (isset($_SESSION['user']) ? $_SESSION['user'] : false),
-    )
+// setup Twig
+$view = new \Slim\Views\Twig(
+    __DIR__ . '/../app/templates',
+    $config['slim']['twig']
 );
+$view->addExtension(new Twig_Extension_Debug());
+$view->addExtension(new \Slim\Views\TwigExtension($app->router, $app->request->getUri()));
+$container['view'] = $view;
 
-// set Twig base folder, view folder and initialize Joindin filters
-$app->view()->parserDirectory = realpath(__DIR__ . '/../vendor/Twig/lib/Twig');
-$app->view()->setTemplatesDirectory('../app/templates');
-View\Filters\initialize($app->view()->getEnvironment(), $app);
-View\Functions\initialize($app->view()->getEnvironment(), $app);
 
-if (isset($config['slim']['twig']['cache'])) {
-    $app->view()->getEnvironment()->setCache($config['slim']['twig']['cache']);
-} else {
-    $app->view()->getEnvironment()->setCache(false);
-}
+// Pass the current mode to the template, so we can choose to show
+// certain things only if the app is in live/development mode
+$view->getEnvironment()->addGlobal('slim_mode', $config['slim']['mode']);
 
-$app->configureMode('development', function () use ($app) {
-    $env = $app->view()->getEnvironment();
-    $env->enableDebug();
-    $env->addExtension(new \Twig_Extension_Debug());
-});
+// Other variables needed by the main layout.html.twig template
+$view->getEnvironment()->addGlobal('google_analytics_id', $config['slim']['custom']['googleAnalyticsId']);
+$view->getEnvironment()->addGlobal('user', (isset($_SESSION['user']) ? $_SESSION['user'] : false));
+
+// initialize Joindin filters and functions
+View\Filters\initialize($view->getEnvironment(), $app);
+View\Functions\initialize($view->getEnvironment(), $app);
 
 // register error handlers
 $app->error(function (\Exception $e) use ($app) {
