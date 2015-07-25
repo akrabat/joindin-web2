@@ -1,4 +1,4 @@
-<form method="POST" action="{{ urlFor('user-login') }}">
+<form method="POST" action="{{ path_for('user-login') }}">
     {% if flash.getMessages.message %}
         <div class="alert alert-success">{{flash.getMessages.message}}</div>
     {% endif %}
@@ -15,15 +15,15 @@
     </div>
     <div class="form-group">
         <input type="submit" class="btn btn-primary" value="Log in">
-        <a class="btn btn-link" href="{{ urlFor('user-register') }}">or register now</a>
+        <a class="btn btn-link" href="{{ path_for('user-register') }}">or register now</a>
     </div>
     <div class="form-group">
-        <span class="already-registered">Already registered?</span> <a href="{{ urlFor('twitter-login') }}"><img src="/img/sign-in-with-twitter.png" alt="Sign in with Twitter"></a>
+        <span class="already-registered">Already registered?</span> <a href="{{ path_for('twitter-login') }}"><img src="/img/sign-in-with-twitter.png" alt="Sign in with Twitter"></a>
     </div>
     <div>
-        Problems logging in? <a class="btn btn-link" href="{{ urlFor('user-resend-verification') }}">Resend welcome email</a>
-        <a class="btn btn-link" href="{{ urlFor('user-password-reset') }}">Forgotten password</a>
-        <a class="btn btn-link" href="{{ urlFor('user-username-reminder') }}">Forgotten username</a>
+        Problems logging in? <a class="btn btn-link" href="{{ path_for('user-resend-verification') }}">Resend welcome email</a>
+        <a class="btn btn-link" href="{{ path_for('user-password-reset') }}">Forgotten password</a>
+        <a class="btn btn-link" href="{{ path_for('user-username-reminder') }}">Forgotten username</a>
     </div>
     <input type="hidden" name="redirect" value="{{ getCurrentUrl() }}">
 </form>

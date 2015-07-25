@@ -1,10 +1,10 @@
 {%
-set talkUrl = urlFor(
+set talkUrl = path_for(
     'talk-quicklink', {"talkStub": talk.getStub}
 )
 %}
 {%
-set eventUrl = urlFor(
+set eventUrl = path_for(
     'event-detail', {"friendly_name": event.getUrlFriendlyName}
 )
 %}
@@ -46,7 +46,7 @@ set eventUrl = urlFor(
                         {% endif %}
 
                         {% if speaker.username %}
-                            <a href="{{ urlFor('user-profile', {'username': speaker.username}) }}">{{ speaker.speaker_name }}</a>{{comma}}
+                            <a href="{{ path_for('user-profile', {'username': speaker.username}) }}">{{ speaker.speaker_name }}</a>{{comma}}
                         {% else %}
                             {{ speaker.speaker_name }}{{comma}}
                         {% endif %}

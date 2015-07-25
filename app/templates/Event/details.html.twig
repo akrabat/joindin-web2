@@ -12,7 +12,7 @@
                     {% if event.getTags %}
                         <div class="tags">
                         {% for tag in event.getTags %}
-                            <a href="{{ urlFor('search-events') }}?tag={{ tag }}">
+                            <a href="{{ path_for('search-events') }}?tag={{ tag }}">
                                 <span class="label label-default">{{ tag }}</span>
                             </a>
                         {% endfor %}
@@ -32,7 +32,7 @@
                         {% endif %}
 
                         {% if host.username %}
-                            <a href="{{ urlFor('user-profile', {'username': host.username}) }}">{{ host.host_name }}</a>{{comma}}
+                            <a href="{{ path_for('user-profile', {'username': host.username}) }}">{{ host.host_name }}</a>{{comma}}
                         {% else %}
                             {{ host.host_name }}{{comma}}
                         {% endif %}
@@ -42,7 +42,7 @@
                 <div class="col-xs-12 col-sm-6">
                     Event Website: <a href="{{ event.getWebsiteAddress }}" rel="nofollow">{{ event.getWebsiteAddress }}</a> <i class="fa fa-external-link-square"></i>
                     <br>
-                    Short URL: <a href="{{ shortUrlForEvent(event.getStub) }}">{{ shortUrlForEvent(event.getStub) }}</a> <i class="fa fa-external-link-square"></i>
+                    Short URL: <a href="{{ shortpath_forEvent(event.getStub) }}">{{ shortpath_forEvent(event.getStub) }}</a> <i class="fa fa-external-link-square"></i>
                 </div>
             {# </div> #}
         </div>

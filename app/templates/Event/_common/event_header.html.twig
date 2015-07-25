@@ -11,7 +11,7 @@
 
                     {{ dateRange(event.getStartDate, event.getEndDate, 'j M Y') }}
 
-                    at <a href="{{ urlFor('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}#streetmap">{{ event.getLocation }}</a>
+                    at <a href="{{ path_for('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}#streetmap">{{ event.getLocation }}</a>
 
                     {% include 'Event/_common/attending.html.twig' %}
                 </small>
@@ -20,12 +20,12 @@
     </div>
     <nav class="page-nav">
         <ul class="nav nav-pills">
-            <li><a href="{{ urlFor('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">Details</a></li>
-            <li><a href="{{ urlFor('event-schedule', {"friendly_name": event.getUrlFriendlyName}) }}">Schedule</a></li>
-            <li><a href="{{ urlFor('event-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Event comments</a></li>
-            <li><a href="{{ urlFor('event-talk-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Talk comments</a></li>
+            <li><a href="{{ path_for('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">Details</a></li>
+            <li><a href="{{ path_for('event-schedule', {"friendly_name": event.getUrlFriendlyName}) }}">Schedule</a></li>
+            <li><a href="{{ path_for('event-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Event comments</a></li>
+            <li><a href="{{ path_for('event-talk-comments', {"friendly_name": event.getUrlFriendlyName}) }}">Talk comments</a></li>
             {% if event.getCanEdit %}
-            <li><a href="{{ urlFor('event-edit', {"friendly_name": event.getUrlFriendlyName}) }}">Edit</a></li>
+            <li><a href="{{ path_for('event-edit', {"friendly_name": event.getUrlFriendlyName}) }}">Edit</a></li>
             {% endif %}
         </ul>
     </nav>

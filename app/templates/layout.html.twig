@@ -40,20 +40,20 @@
                         <a href="/event">Events</a>
                     </li>
                     <li>
-                        <a href="{{ urlFor('apps') }}">Apps</a>
+                        <a href="{{ path_for('apps') }}">Apps</a>
                     </li>
                     <li>
-                        <a href="{{ urlFor('about') }}">About</a>
+                        <a href="{{ path_for('about') }}">About</a>
                     </li>
 
                     {% if user %}
-                         <li><a href="{{ urlFor('user-profile', {'username': user.getUsername} ) }}">{{ user.getFullName }}</a></li>
-                        <li><a href="{{ urlFor('user-logout') }}{%if currentPath() != "/" %}?redirect={{ currentPath() }}{% endif %}">Logout</a></li>
+                         <li><a href="{{ path_for('user-profile', {'username': user.getUsername} ) }}">{{ user.getFullName }}</a></li>
+                        <li><a href="{{ path_for('user-logout') }}{%if currentPath() != "/" %}?redirect={{ currentPath() }}{% endif %}">Logout</a></li>
                     {% else %}
-                        <li><a href="{{ urlFor('user-login') }}">Login</a></li>
+                        <li><a href="{{ path_for('user-login') }}">Login</a></li>
                     {% endif %}
                 </ul>
-                <form class="navbar-form navbar-right" role="search" action="{{ urlFor('search') }}">
+                <form class="navbar-form navbar-right" role="search" action="{{ path_for('search') }}">
                     <div class="form-group">
                         <div class="input-group">
                             <input type="text" name="keyword" class="form-control input-sm" value="{{ keyword }}" placeholder="Search events or talks">

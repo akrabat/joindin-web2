@@ -3,8 +3,7 @@ namespace View\Functions;
 
 use Twig_Environment;
 use Twig_SimpleFunction;
-use Slim\Slim;
-use Slim\Views\TwigExtension;
+use Slim\App;
 
 /**
  * A group of Twig functions for use in view templates
@@ -13,15 +12,8 @@ use Slim\Views\TwigExtension;
  * @param  Slim             $app
  * @return void
  */
-function initialize(Twig_Environment $env, Slim $app)
+function initialize(Twig_Environment $env, App $app)
 {
-    $env->addExtension(new TwigExtension());
-
-    $env->addFunction(new Twig_SimpleFunction('urlFor', function ($routeName, $params = array()) use ($app) {
-        $url = $app->urlFor($routeName, $params);
-        return $url;
-    }));
-    
     $env->addFunction(new Twig_SimpleFunction('hash', function ($value) {
         return md5($value);
     }));

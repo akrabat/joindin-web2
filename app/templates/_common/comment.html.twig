@@ -19,7 +19,7 @@
                         <div class="meta pull-right-sm pull-right-md pull-left-xs">
                             {% if comment.getUserDisplayName %}
                                 {% if comment.username %}
-                                    <a href="{{ urlFor('user-profile', {'username': comment.username}) }}">{{ comment.userDisplayName }}</a>
+                                    <a href="{{ path_for('user-profile', {'username': comment.username}) }}">{{ comment.userDisplayName }}</a>
                                 {% else %}
                                     {{ comment.userDisplayName }}
                                 {% endif %}

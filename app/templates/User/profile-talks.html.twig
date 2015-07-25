@@ -18,7 +18,7 @@
                         {% endif %}
 
                         <p class="more">
-                            <a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">
+                            <a href="{{ path_for('user-profile', {'username': thisUser.getUsername}) }}">
                                 View profile</a>
                         </p>
                     </section>
@@ -47,16 +47,16 @@
                                             {# width/height: 156/28, 132/24, 117/21 #}
                                     </div>
                                 {% endif %}
-                                <h3><a href="{{ urlFor('talk', {'eventSlug': event.url_friendly_name, 'talkSlug': talk.getUrlFriendlyTalkTitle }) }}">{{ talk.getTitle }}</a></h3>
+                                <h3><a href="{{ path_for('talk', {'eventSlug': event.url_friendly_name, 'talkSlug': talk.getUrlFriendlyTalkTitle }) }}">{{ talk.getTitle }}</a></h3>
                                 <small>
                                     at
-                                    <a href="{{ urlFor('event-detail', {'friendly_name': event.url_friendly_name}) }}">{{ event.name }}</a>
+                                    <a href="{{ path_for('event-detail', {'friendly_name': event.url_friendly_name}) }}">{{ event.name }}</a>
                                     on {{ talk.getStartDateTime|date('j M Y') }}
                                 </small>
                             </section>
                         {% endfor %}
                         <p class="more">
-                            <a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">
+                            <a href="{{ path_for('user-profile', {'username': thisUser.getUsername}) }}">
                                 View profile</a>
                         </p>
                     </div>

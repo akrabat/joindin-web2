@@ -53,11 +53,11 @@ $container['view'] = $view;
 
 // Pass the current mode to the template, so we can choose to show
 // certain things only if the app is in live/development mode
-$view->getEnvironment()->addGlobal('slim_mode', $config['slim']['mode']);
+$view['slim_mode']= $config['slim']['mode'];
 
 // Other variables needed by the main layout.html.twig template
-$view->getEnvironment()->addGlobal('google_analytics_id', $config['slim']['custom']['googleAnalyticsId']);
-$view->getEnvironment()->addGlobal('user', (isset($_SESSION['user']) ? $_SESSION['user'] : false));
+$view['google_analytics_id'] = $config['slim']['custom']['googleAnalyticsId'];
+$view['user'] = isset($_SESSION['user']) ? $_SESSION['user'] : false;
 
 // initialize Joindin filters and functions
 View\Filters\initialize($view->getEnvironment(), $app);

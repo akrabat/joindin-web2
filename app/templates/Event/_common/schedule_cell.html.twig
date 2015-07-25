@@ -3,7 +3,7 @@
     <a href="javascript:" class="star{% if talk.starred %} starred{% endif %}">{% if talk.starred %}&#10029;{% else %}&#10025;{% endif %}</a>
 </div>
 {% endif %}
-<p><a href="{{ urlForTalk(event.getUrlFriendlyName, talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a></p>
+<p><a href="{{ path_forTalk(event.getUrlFriendlyName, talk.getUrlFriendlyTalkTitle) }}">{{ talk.title }}</a></p>
 <p>{% for speaker in talk.speakers %}
     <span class="speaker">
         {% set comma = "" %}
@@ -12,7 +12,7 @@
         {% endif %}
 
         {% if speaker.username %}
-            <a href="{{ urlFor('user-profile', {'username': speaker.username}) }}">{{ speaker.speaker_name }}</a>{{comma}}
+            <a href="{{ path_for('user-profile', {'username': speaker.username}) }}">{{ speaker.speaker_name }}</a>{{comma}}
         {% else %}
             {{ speaker.speaker_name }}{{comma}}
         {% endif %}

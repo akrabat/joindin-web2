@@ -18,7 +18,7 @@
                         {% endif %}
 
                         <p class="more">
-                            <a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">
+                            <a href="{{ path_for('user-profile', {'username': thisUser.getUsername}) }}">
                                 View profile</a>
                         </p>
                     </section>
@@ -44,7 +44,7 @@
                                     </a>
                                 </div>
                                 <div class="col-xs-10 title">
-                                    <h3><a href="{{ urlFor('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">{{ event.name }}</a></h3>
+                                    <h3><a href="{{ path_for('event-detail', {"friendly_name": event.getUrlFriendlyName}) }}">{{ event.name }}</a></h3>
                                     <div>
                                         {% if event.getLocation %}
                                         at
@@ -62,7 +62,7 @@
                             </section>
                         {% endfor %}
                         <p class="more">
-                            <a href="{{ urlFor('user-profile', {'username': thisUser.getUsername}) }}">
+                            <a href="{{ path_for('user-profile', {'username': thisUser.getUsername}) }}">
                                 View profile</a>
                         </p>
                     </div>

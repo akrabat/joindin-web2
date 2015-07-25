@@ -35,7 +35,7 @@
                             <h2 class="panel-title">Write a comment</h2>
                         </div>
                         <div class="panel-body">
-                            <form method="POST" action="{{ urlFor('talk-add-comment', {'eventSlug': event.getUrlFriendlyName, 'talkSlug': talk.getUrlFriendlyTalkTitle}) }}">
+                            <form method="POST" action="{{ path_for('talk-add-comment', {'eventSlug': event.getUrlFriendlyName, 'talkSlug': talk.getUrlFriendlyTalkTitle}) }}">
                                 {% if flash.getMessages.error %}
                                     <div class="alert alert-danger">{{flash.getMessages.error}}</div>
                                 {% endif %}
