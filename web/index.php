@@ -84,7 +84,7 @@ $container['notFoundHandler'] = function ($c) use ($view) {
 
 // register middlewares
 $app->add(new Middleware\ValidationMiddleware());
-$app->add(new Middleware\FormMiddleware());
+$app->add(new Middleware\FormMiddleware($app));
 
 // register routes
 new Application\ApplicationController($app);

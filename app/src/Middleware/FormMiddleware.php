@@ -2,7 +2,7 @@
 
 namespace Middleware;
 
-use Slim\Middleware;
+use \Slim\App;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
@@ -29,11 +29,16 @@ use Symfony\Component\Translation\Translator;
  *
  * For more information on usage, see the {@see self::call()} method.
  */
-class FormMiddleware extends Middleware
+class FormMiddleware
 {
     const DEFAULT_LAYOUT = '_common/joindin_form_div_layout.html.twig';
 
     const SERVICE_FORM_FACTORY = 'formFactory';
+
+    /**
+     * @var \Slim\App
+     */
+    private $app;
 
     /** @var string  */
     private $csrfSecret;
@@ -48,8 +53,9 @@ class FormMiddleware extends Middleware
      *     the current folder.
      * @param string      $locale     The locale in country_DIALECT notation, for example: en_UK
      */
-    public function __construct($csrfSecret = null, $locale = 'en_UK')
+    public function __construct(App $app, $csrfSecret = null, $locale = 'en_UK')
     {
+        $this->app        = $app;
         $this->csrfSecret = $csrfSecret ?: md5(__DIR__);
         $this->locale     = $locale;
     }
@@ -69,7 +75,7 @@ class FormMiddleware extends Middleware
      *
      * @return void
      */
-    public function call()
+    public function __invoke($request, $response, $next)
     {
         if (! $this->app->translator instanceof Translator) {
             $this->initializeTranslator();
@@ -89,7 +95,7 @@ class FormMiddleware extends Middleware
             }
         );
 
-        $this->next->call();
+        return $next($request, $response);
     }
 
     /**

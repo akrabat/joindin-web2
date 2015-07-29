@@ -2,7 +2,6 @@
 
 namespace Middleware;
 
-use Slim\Middleware;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
 use Symfony\Component\Translation\MessageSelector;
@@ -24,7 +23,7 @@ use Symfony\Component\Validator\Validator;
  *
  * For more information on usage, see the {@see self::call()} method.
  */
-class ValidationMiddleware extends Middleware
+class ValidationMiddleware
 {
     const SERVICE_VALIDATOR = 'validator';
 
@@ -50,7 +49,7 @@ class ValidationMiddleware extends Middleware
      *
      * @return void
      */
-    public function call()
+    public function __invoke($request, $response, $next)
     {
         $this->addTranslations($this->getTranslator(), $this->getTranslationsRootFolder());
 
@@ -62,7 +61,7 @@ class ValidationMiddleware extends Middleware
             }
         );
 
-        $this->next->call();
+        return $next($request, $response);
     }
 
     /**
